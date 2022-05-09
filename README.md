@@ -1,6 +1,7 @@
 # JS Wordle clone
 
 Simple Javascript clone of the game [Wordle](https://en.wikipedia.org/wiki/Wordle).
+
 <center>
 	<br/>
 	<img src=".github/screenshot01.png"/>

@@ -13,7 +13,7 @@ class Main {
 
 	constructor() {
 		this.rowCount = 6;
-		this.wordSize = 6;
+		this.wordSize = 4;
 
 		this.ui = new UI(this.rowCount, this.wordSize);
 		this.cursor = { row: 0, col: 0 };
