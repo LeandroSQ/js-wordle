@@ -20,6 +20,9 @@ class Main {
 
 		this.dictionary = new Dictionary(this.wordSize);
 
+		// Initializes the keyboard
+		this.keyboard = new Keyboard(this);
+
 		this.init();
 	}
 
@@ -35,7 +38,7 @@ class Main {
 		for (let row = 0; row < this.rowCount; row++) this.ui.resetRow(row);
 
 		// Request another word
-		this.targetWord = "lerdyu".toUpperCase();// this.dictionary.getNextWord();
+		this.targetWord = this.dictionary.getNextWord();
 
 		// Set game sate
 		this.state = STATE_PLAYING;
@@ -47,9 +50,6 @@ class Main {
 	async init() {
 		// Loads the dictionary
 		await this.dictionary.load();
-
-		// Initializes the keyboard
-		this.keyboard = new Keyboard(this);
 
 		// And post-pone game initial state
 		setTimeout(this.reset.bind(this), 250);
