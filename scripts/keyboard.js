@@ -118,7 +118,7 @@ export class Keyboard {
 	#onKey(event) {
 		// If the game is in GAME_OVER state, just reset it
 		if (this.main.state === STATE_GAME_OVER) {
-			if (event.type === "keyup") this.main.reset();
+			if (event.type === "keydown") this.main.reset();
 
 			return;
 		}
