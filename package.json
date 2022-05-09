@@ -1,7 +1,7 @@
 {
 	"name": "js-wordle",
 	"version": "1.0.0",
-	"description": "Wordle clone",
+	"description": "Wordle game clone",
 	"main": "src/index.html",
 	"author": "LeandroSQ",
 	"license": "MIT",
