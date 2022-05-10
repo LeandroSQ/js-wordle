@@ -1,5 +1,5 @@
 const fs = require("fs/promises");
-const { createReadStream } = require("fs");
+const { createReadStream, existsSync } = require("fs");
 const path = require("path");
 const csv = require("csv-parser");
 
@@ -98,10 +98,20 @@ function parseCSV(filename) {
 	});
 }
 
+async function createCacheDirectoryIfNotExistent() {
+	const folder = path.join(__dirname, "../", "cache");
+
+	if (!existsSync(folder)) {
+		console.log(`'cache' directory does not exit, creating it...`);
+		await fs.mkdir(folder);
+	}
+}
+
 module.exports = {
 	loadDictionary,
 	loadAllDictionaries,
 	isPresentInAnyDictionary,
 	validateWord,
-	parseCSV
+	parseCSV,
+	createCacheDirectoryIfNotExistent
 };

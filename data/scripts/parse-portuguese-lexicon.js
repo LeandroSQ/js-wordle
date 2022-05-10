@@ -1,7 +1,7 @@
 // Imports
 const fs = require("fs/promises");
 const path = require("path");
-const { loadAllDictionaries, isPresentInAnyDictionary, validateWord, parseCSV } = require("./util.js");
+const { loadAllDictionaries, isPresentInAnyDictionary, validateWord, parseCSV, createCacheDirectoryIfNotExistent } = require("./util.js");
 const { performance } = require("perf_hooks");
 
 // Constants
@@ -48,6 +48,7 @@ async function main() {
 	csv = csv.sort((a, b) => a.frequency - b.frequency);
 
 	console.log(`Writing ${csv.length} words to file...`);
+	await createCacheDirectoryIfNotExistent();
 	await fs.writeFile(
 		outputFilePath,
 		csv.map((x) => x.word).join("\n"),
