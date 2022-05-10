@@ -18,18 +18,19 @@ const gulpIf = require("gulp-if");
 function isArgumentPassed(...args) {
 	for (let i = 0; i < args.length; i++) {
 		if (!args[i].startsWith("--")) {
-			args.unshift(`--${args[i]}`);
+			if (args[i].length > 1) {
+				args.unshift(`--${args[i]}`);
+			} else {
+				args.unshift(`-${args[i]}`);
+			}
+
 			i++;
 		}
 	}
 
 	for (const key of args) {
-		const index = process.argv.indexOf(key);
-		const next = process.argv[index + 1];
-
-		if (index < 0 ? null : !next || next[0] === "-" ? true : next === true) {
-			return true;
-		}
+		if (process.argv.includes(key)) return true;
+		if (!key.startsWith("-") && process.env.includes(key.toUpperCase())) return true;
 	}
 
 	return false;
@@ -71,6 +72,7 @@ const cssOptions = {
 
 const isProduction = isArgumentPassed("production", "prod");
 console.log(isProduction ? "PRODUCTION" : "DEVELOPMENT");
+console.log(process.argv);
 
 // Tasks
 function reload() {
