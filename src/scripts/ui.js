@@ -9,6 +9,10 @@ export class UI {
 		document.body.appendChild(this.element);
 
 		// Initialize the rows
+		this.#generateRows(rowCount, wordSize);
+	}
+
+	#generateRows(rowCount, wordSize) {
 		this.rows = [];
 		for (let i = 0; i < rowCount; i++) {
 			const row = new Row(wordSize);
@@ -61,6 +65,12 @@ export class UI {
 		setTimeout(() => {
 			document.body.removeChild(element);
 		}, duration);
+	}
+
+	showMessage(message) {
+		const element = document.createElement("div");
+		element.classList.add("message");
+		element.innerText = message;
 	}
 
 	#markLetter(letter, tag) {

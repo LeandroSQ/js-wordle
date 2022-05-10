@@ -33,6 +33,7 @@ export class Cell {
 	get letter() {
 		return this.element.innerText;
 	}
+
 	set letter(value) {
 		this.element.innerText = value;
 	}

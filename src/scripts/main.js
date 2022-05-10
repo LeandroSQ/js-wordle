@@ -2,15 +2,10 @@ import "./extensions.js";
 import { UI } from "./ui.js";
 import { Dictionary } from "./dictionary.js";
 import { Keyboard } from "./keyboard.js";
-import {
-	POINTS_CORRECT_LETTER_AND_ORDER,
-	POINTS_CORRECT_LETTER_WRONG_ORDER,
-	STATE_PLAYING,
-	STATE_GAME_OVER
-} from "./constants.js";
+import { POINTS_CORRECT_LETTER_AND_ORDER, POINTS_CORRECT_LETTER_WRONG_ORDER, STATE_PLAYING, STATE_GAME_OVER } from "./constants.js";
 
 class Main {
-
+	
 	constructor() {
 		this.rowCount = 6;
 		this.wordSize = 4;
@@ -49,7 +44,7 @@ class Main {
 
 	async init() {
 		// Loads the dictionary
-		await this.dictionary.load();
+		await this.dictionary.init();
 
 		// And post-pone game initial state
 		setTimeout(this.reset.bind(this), 250);
@@ -113,10 +108,10 @@ class Main {
 		const answer = this.ui.getRowText(this.cursor.row);
 
 		// Checks if the game has been won
-		if (answer === this.targetWord) return this.onCorrectAnswer(this.cursor.row);
+		if (answer === this.targetWord) return this.#onCorrectAnswer(this.cursor.row);
 
 		// Analyzes misplaces occurrences
-		const stats = this.analyzeWordAndAnswer(answer);
+		const stats = this.#analyzeMatches(answer);
 		for (let i = 0; i < this.wordSize; i++) {
 			const expected = this.targetWord[i];
 			const actual = answer[i];
@@ -133,7 +128,7 @@ class Main {
 				this.points += POINTS_CORRECT_LETTER_AND_ORDER;
 			} else if (stats.hasOwnProperty(actual) && stats[actual].count > stats[actual].matches) {
 				// Only occurrence of 'actual' letter, and with more than one occurrence on the word but on different spots
-				if (stats[actual].count > stats[actual].misplaced) cell.setBadge(stats[actual].count);
+				if (stats[actual].count > stats[actual].misplaced && stats[actual].count > 1) cell.setBadge(stats[actual].count);
 
 				// Wrong spot
 				cell.markAsHint();
@@ -150,48 +145,49 @@ class Main {
 		this.keyboard.highlightKeysAccordingToAnswer(answer, stats);
 	}
 
-	analyzeWordAndAnswer(answer) {
-		const stats = { };
+	#analyzeMatches(answer) {
+		const stats = {};
+		const createIfNonExistent = (property) => {
+			if (!stats.hasOwnProperty(property)) {
+				stats[property] = {
+					count: 0,
+					matches: 0,
+					misplaced: 0
+				};
+			}
+		};
 
 		// Analyzes letter occurrences
 		for (let i = 0; i < this.wordSize; i++) {
 			const expected = this.targetWord[i];
 			const actual = answer[i];
 
-			if (!stats.hasOwnProperty(expected)) {
-				stats[expected] = {
-					count: 0,
-					matches: 0, // Amount of correct letter and in order
-					misplaced: 0,
-				};
-			}
+			createIfNonExistent(expected);
 
 			stats[expected].count++; // Count occurrence
-			if (expected === actual) stats[expected].matches++;// Count match
+			if (expected === actual) stats[expected].matches++; // Count match
 		}
 
+		this.#analyzeMismatches(stats, answer, createIfNonExistent);
+
+		return stats;
+	}
+
+	#analyzeMismatches(stats, answer, createIfNonExistent) {
 		// Analyzes letter misplacement
 		for (let i = 0; i < this.wordSize; i++) {
 			const expected = this.targetWord[i];
 			const actual = answer[i];
 
 			if (actual !== expected && stats.hasOwnProperty(actual) && stats[actual].count > 0) {
-				if (!stats.hasOwnProperty(actual)) {
-					stats[actual] = {
-						count: 0,
-						matches: 0,
-						misplaced: 0,
-					};
-				}
+				createIfNonExistent(actual);
 
 				stats[actual].misplaced++; // Count misplaced
 			}
 		}
-
-		return stats;
 	}
 
-	onCorrectAnswer(row) {
+	#onCorrectAnswer(row) {
 		// Add points
 		this.points += POINTS_CORRECT_LETTER_AND_ORDER * this.wordSize * 3;
 

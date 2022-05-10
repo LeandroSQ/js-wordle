@@ -1,6 +1,7 @@
 import { Cell } from "./cell.js";
 
 export class Row {
+
 	constructor(cellCount) {
 		// Initialize element
 		this.element = document.createElement("div");
@@ -22,4 +23,5 @@ export class Row {
 	markAsActive() {
 		this.element.classList.add("active");
 	}
+
 }

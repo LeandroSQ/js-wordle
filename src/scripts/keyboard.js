@@ -1,10 +1,9 @@
-import {
-	STATE_GAME_OVER,
-	ALPHABET
-} from "./constants.js";
+import { STATE_GAME_OVER, ALPHABET } from "./constants.js";
 
 const CODE_BACKSPACE = 8;
 const CODE_RETURN = 13;
+const CODE_A = 65;
+const CODE_Z = 90;
 
 export class Keyboard {
 
@@ -26,7 +25,7 @@ export class Keyboard {
 		const layout = [
 			["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
 			["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-			["#BACKSPACE", "Z", "X", "C", "V", "B", "N", "M", "#ENTER"],
+			["#BACKSPACE", "Z", "X", "C", "V", "B", "N", "M", "#ENTER"]
 		];
 
 		// For each row in the layout
@@ -37,29 +36,35 @@ export class Keyboard {
 
 			// For each key in the row
 			for (const col of row) {
-				// Create the key element
-				const keyElement = document.createElement("div");
-				keyElement.classList.add("key");
-				keyElement.setAttribute("data-key", col);
-
-				// If special key, use an icon to describe it
-				if (col.startsWith("#")) {
-					// Import SVG icon
-					keyElement.innerHTML = await this.#loadSVG(col.substring(1));
-					keyElement.classList.add("img");
-				} else {
-					// Otherwise just the letter
-					keyElement.innerText = col;
-				}
-
-				// Handle tap
-				keyElement.addEventListener("click", this.#onVirtualKeyBoardClick.bind(this, col));
+				const keyElement = await this.#createKeyElement(col);
 
 				rowElement.appendChild(keyElement);
 			}
 
 			this.element.appendChild(rowElement);
 		}
+	}
+
+	async #createKeyElement(col) {
+		// Create the key element
+		const keyElement = document.createElement("div");
+		keyElement.classList.add("key");
+		keyElement.setAttribute("data-key", col);
+
+		// If special key, use an icon to describe it
+		if (col.startsWith("#")) {
+			// Import SVG icon
+			keyElement.innerHTML = await this.#loadSVG(col.substring(1));
+			keyElement.classList.add("img");
+		} else {
+			// Otherwise just the letter
+			keyElement.innerText = col;
+		}
+
+		// Handle tap
+		keyElement.addEventListener("click", this.#onVirtualKeyBoardClick.bind(this, col));
+
+		return keyElement;
 	}
 
 	async #loadSVG(name) {
@@ -98,14 +103,14 @@ export class Keyboard {
 		// Special keys
 		if (event.keyCode === CODE_BACKSPACE || event.keyCode === CODE_RETURN) key = `#${key}`;
 
+		// Fetch the key element
 		const element = this.#getKeyElement(key);
-		if (!element) return; // Invalid key
 
 		// Highlight the key
 		if (event.type === "keyup") {
-			element.classList.remove("active");
+			element?.classList.remove("active");
 		} else if (event.type === "keydown") {
-			element.classList.add("active");
+			element?.classList.add("active");
 		}
 	}
 
@@ -116,28 +121,24 @@ export class Keyboard {
 	}
 
 	#onKey(event) {
-		// If the game is in GAME_OVER state, just reset it
-		if (this.main.state === STATE_GAME_OVER) {
-			if (event.type === "keydown") this.main.reset();
-
-			return;
-		}
-
 		this.#simulateKeyTap(event);
 
-		const key = event.key.toUpperCase();
+		if (event.type !== "keydown") return;
 
-		if (event.type === "keypress" && ALPHABET.contains(key)) {
+		// If the game is in GAME_OVER state, just reset it
+		if (this.main.state === STATE_GAME_OVER) return this.main.reset();
+
+		if (event.keyCode >= CODE_A && event.keyCode <= CODE_Z) {
 			// Handle letter typing
-			this.main.onTypeLetter(key);
+			this.main.onTypeLetter(String.fromCharCode(event.keyCode));
 
 			event.preventDefault();
-		} else if (event.type === "keydown" && event.keyCode === CODE_BACKSPACE) {
+		} else if (event.keyCode === CODE_BACKSPACE) {
 			// Handle letter erasing
 			this.main.onBackspacePressed();
 
 			event.preventDefault();
-		} else if (event.type === "keydown" && event.keyCode === CODE_RETURN) {
+		} else if (event.keyCode === CODE_RETURN) {
 			// Handle row completion
 			this.main.onEnterPressed();
 
@@ -147,8 +148,7 @@ export class Keyboard {
 
 	clear() {
 		for (let i = 0; i < ALPHABET.length; i++) {
-			const letter = ALPHABET[i];
-			const element = this.#getKeyElement(letter);
+			const element = this.#getKeyElement(ALPHABET[i]);
 			element.classList.remove("correct");
 			element.classList.remove("hint");
 			element.classList.remove("incorrect");
@@ -170,9 +170,9 @@ export class Keyboard {
 		}
 
 		for (const letter of answer) {
-			const element = this.#getKeyElement(letter);
 			if (!stats.hasOwnProperty(letter) || stats[letter].count <= 0) {
-				element.classList.add("incorrect");
+				const element = this.#getKeyElement(letter);
+				element?.classList.add("incorrect");
 			}
 		}
 	}
