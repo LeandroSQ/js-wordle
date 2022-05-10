@@ -30,7 +30,7 @@ function isArgumentPassed(...args) {
 
 	for (const key of args) {
 		if (process.argv.includes(key)) return true;
-		if (!key.startsWith("-") && process.env.includes(key.toUpperCase())) return true;
+		if (!key.startsWith("-") && key.toUpperCase() in process.env) return true;
 	}
 
 	return false;
@@ -72,7 +72,6 @@ const cssOptions = {
 
 const isProduction = isArgumentPassed("production", "prod");
 console.log(isProduction ? "PRODUCTION" : "DEVELOPMENT");
-console.log(process.argv);
 
 // Tasks
 function reload() {
