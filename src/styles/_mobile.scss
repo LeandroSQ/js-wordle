@@ -1,0 +1,43 @@
+@media only screen and (max-width: 768px) {
+
+	html {
+		--cell-size: min(calc(100vw / 6.5), calc(100vh / 12.5));
+	}
+
+	body {
+		flex-direction: column;
+		justify-content: space-around;
+	}
+
+	div.ui {
+		flex: 1;
+		margin: 20pt 0pt;
+	}
+
+	div.keyboard {
+		margin: 0pt;
+		margin-bottom: 10pt;
+		padding: 0pt 5pt;
+		font-size: min(5vw, 2.5vh);
+		place-self: end;
+		width: 100%;
+		gap: 0.5em;
+
+		div.row {
+			gap: 0.2em;
+			width: 100%;
+		}
+
+		div.key {
+			$size: 1.75em;
+			min-width: $size;
+			min-height: $size * 1.25;
+			line-height: $size * 1.25;
+
+			&:hover {
+				transform: none;
+			}
+		}
+	}
+
+}

@@ -1,0 +1,38 @@
+/* Common */
+html {
+	--cell-size: 50pt;
+}
+
+/* Light mode */
+html {
+	--background: #edf1f7;
+	--cell-background: #ffffff;
+	--cell-foreground: #1a2138;
+	--cell-foreground-on-surface: #efefef;
+	--cell-incorrect: #ff3d4d;
+	--cell-correct: #A1D808;
+	--cell-yellow: #FFBB11;
+	--cell-hint: #c47cff;
+	--cell-shadow-color: rgba(0, 0, 0, 0.05);
+	--cell-border-color: #ccc;
+	--keyboard-key-color: rgba(128, 128, 128, 0.2);
+	--keyboard-special-key-color: rgba(0, 0, 0, 0.17);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+	html {
+		--background: #272822;
+		--cell-background: rgba(255, 255, 255, 0.15);
+		--cell-foreground: #F8F8F2;
+		--cell-foreground-on-surface: #F8F8F2;
+		--cell-incorrect: #F92672;
+		--cell-correct: #A6E22E;
+		--cell-yellow: #E6DB74;
+		--cell-hint: #AE81FF;
+		--cell-shadow-color: rgba(0, 0, 0, 0.5);
+		--cell-border-color: transparent;
+		--keyboard-key-color: rgba(255, 255, 255, 0.2);
+		--keyboard-special-key-color: rgba(255, 255, 255, 0.1);
+	}
+}

@@ -1,0 +1,81 @@
+div.keyboard {
+	display: flex;
+	place-content: center;
+	place-items: center;
+	flex-direction: column;
+	gap: 0.35em;
+	font-size: 20pt;
+	margin: 50pt;
+	color: var(--cell-foreground);
+
+	* {
+		font-family: 'Cousine', 'Roboto Mono', monospace;
+		font-weight: bolder;
+	}
+
+	div.row {
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+		gap: 0.35em;
+		width: 100%;
+	}
+
+	div.key {
+		position: relative;
+		min-width: 1.5em;
+		min-height: 1.5em;
+		line-height: 1.5em;
+		flex: 1 1 0;
+		text-align: center;
+		background-color: var(--keyboard-key-color);
+		border-radius: 5pt;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		transition: background-color 200ms;
+		outline: none;
+
+		&:hover {
+			background-color: rgba(255, 255, 255, 0.35);
+			transform: scale(1.25);
+		}
+
+		&:active {
+			background-color: var(--cell-hint);
+		}
+
+		&.img {
+			padding: 0.25em 0.75em;
+			background-color: var(--keyboard-special-key-color);
+
+			svg {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				width: 1em;
+				height: 1em;
+				margin: auto;
+			}
+		}
+
+		&.hint {
+			background-color: var(--cell-hint);
+			color: var(--cell-foreground-on-surface);
+		}
+
+		&.correct {
+			background-color: var(--cell-correct);
+			color: var(--cell-foreground-on-surface);
+		}
+
+		&.incorrect {
+			opacity: 0.15;
+		}
+
+		&.active {
+			background-color: var(--cell-hint);
+		}
+	}
+}
