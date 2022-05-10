@@ -46,3 +46,4 @@ Simple Javascript clone of the game [Wordle](https://en.wikipedia.org/wiki/Wordl
 | Eslint | For linting and semantic analysis |
 | Github actions | For CI, building and deploying to github pages |
 | [LexPorBr](http://www.lexicodoportugues.com/) | For providing a wonderful portuguese lexicon |
+| [SUBTLEX-US](http://crr.ugent.be/archives/740) | For providing a english lexicon |
