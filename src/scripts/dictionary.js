@@ -8,7 +8,7 @@ export class Dictionary {
 	}
 
 	async setLanguage({ code, name }) {
-		this.filename = `lang/dictionary-${code.replace("-", "")}.txt`;
+		this.filename = `lang/dictionary-${code.replace("-", "").toLowerCase()}.txt`;
 		await this.init();
 	}
 
