@@ -1,4 +1,4 @@
-@import "variables", "animations", "ui", "toast", "keyboard", "mobile";
+@import "variables", "animations", "ui", "toast", "keyboard", "selector", "hint", "mobile";
 
 * {
 	margin: 0px;
@@ -9,7 +9,7 @@
 	backface-visibility: hidden;
 }
 
-html,body {
+html, body {
 	background-color: var(--background);
 	overflow: hidden;
 	width: 100vw;

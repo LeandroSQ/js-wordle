@@ -31,3 +31,12 @@ export const ALPHABET = [
 	"Y",
 	"Z",
 ];
+export const SUPPORTED_LANGUAGES = [
+	{ code: "en-US", name: "English" },
+	{ code: "pt-BR", name: "Português" }
+];
+export const SUPPORTED_DIFFICULTIES = [
+	{ letters: 4, rows: 7, name: "Easy" },
+	{ letters: 5, rows: 6, name: "Medium" },
+	{ letters: 6, rows: 5, name: "Hard" }
+];

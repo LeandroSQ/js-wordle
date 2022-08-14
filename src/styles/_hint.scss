@@ -1,0 +1,40 @@
+div.word-hint {
+	$color: var(--cell-yellow);
+
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	display: flex;
+	place-content: center;
+	place-items: center;
+	transform: translateY(calc(110% + 15pt));
+	animation: animate-fade-in 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+
+	&::before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 0px;
+		right: 0px;
+		height: 1px;
+
+		background: transparent;
+		background: -moz-linear-gradient(left, transparent 0%, $color 50%, transparent 100%);
+		background: -webkit-linear-gradient(left, transparent 0%, $color 50%, transparent 100%);
+		background: linear-gradient(to right, transparent 0%, $color 50%, transparent 100%);
+
+		opacity: 0.5;
+
+		z-index: -1;
+	}
+
+	span {
+		padding: 5pt 8.5pt;
+		border-radius: 5pt;
+		background-color: $color;
+		color: var(--cell-foreground);
+		text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+		box-shadow: 0px 0px 10px $color;
+	}
+}

@@ -1,22 +1,24 @@
-import "./extensions.js";
-import { UI } from "./ui.js";
-import { Dictionary } from "./dictionary.js";
-import { Keyboard } from "./keyboard.js";
-import { POINTS_CORRECT_LETTER_AND_ORDER, POINTS_CORRECT_LETTER_WRONG_ORDER, STATE_PLAYING, STATE_GAME_OVER } from "./constants.js";
+import "./extensions";
+import { UI } from "./ui";
+import { Dictionary } from "./dictionary";
+import { Keyboard } from "./keyboard";
+import { POINTS_CORRECT_LETTER_AND_ORDER, POINTS_CORRECT_LETTER_WRONG_ORDER, STATE_PLAYING, STATE_GAME_OVER } from "./constants";
+import { LanguageSelector } from "./language-selector";
+import { DifficultySelector } from "./difficulty-selector";
 
 class Main {
-	
+
 	constructor() {
 		this.rowCount = 6;
 		this.wordSize = 4;
-
-		this.ui = new UI(this.rowCount, this.wordSize);
 		this.cursor = { row: 0, col: 0 };
 
-		this.dictionary = new Dictionary(this.wordSize);
-
-		// Initializes the keyboard
+		// Initializes the components
+		this.difficultySelector = new DifficultySelector(this);
+		this.languageSelector = new LanguageSelector(this);
+		this.ui = new UI(this.rowCount, this.wordSize);
 		this.keyboard = new Keyboard(this);
+		this.dictionary = new Dictionary(this.wordSize);
 
 		this.init();
 	}
@@ -30,7 +32,7 @@ class Main {
 		this.cursor = { row: 0, col: 0 };
 
 		// Reset all the cells
-		for (let row = 0; row < this.rowCount; row++) this.ui.resetRow(row);
+		this.ui.reset();
 
 		// Request another word
 		this.targetWord = this.dictionary.getNextWord();
@@ -44,7 +46,7 @@ class Main {
 
 	async init() {
 		// Loads the dictionary
-		await this.dictionary.init();
+		await this.dictionary.setLanguage(this.languageSelector.current);
 
 		// And post-pone game initial state
 		setTimeout(this.reset.bind(this), 250);
@@ -86,9 +88,7 @@ class Main {
 			if (this.state === STATE_PLAYING) {
 				// Check if we are out of tries
 				if (this.cursor.row + 1 >= this.rowCount) {
-					this.state = STATE_GAME_OVER;
-
-					this.ui.showToast("Game over!");
+					this.#onGameOver();
 				} else {
 					// Highlight the next row as active
 					this.highlightCurrentRow(this.cursor.row + 1);
@@ -145,6 +145,22 @@ class Main {
 		this.keyboard.highlightKeysAccordingToAnswer(answer, stats);
 	}
 
+	async onLanguageChanged(language) {
+		await this.dictionary.setLanguage(language);
+		this.reset();
+	}
+
+	async onDifficultyChanged(difficulty) {
+		this.wordSize = difficulty.letters;
+		this.rowCount = difficulty.rows;
+
+		this.ui.regenerateRows(this.rowCount, this.wordSize);
+
+		await this.dictionary.setWordSize(this.wordSize);
+
+		this.reset();
+	}
+
 	#analyzeMatches(answer) {
 		const stats = {};
 		const createIfNonExistent = (property) => {
@@ -199,6 +215,16 @@ class Main {
 
 		// Highlight entire row as correct
 		for (let col = 0; col < this.wordSize; col++) this.ui.getCell({ row, col }).markAsCorrect();
+	}
+
+	#onGameOver() {
+		this.state = STATE_GAME_OVER;
+
+		// Shows visual feedback
+		this.ui.showToast("Game over!");
+		this.ui.showHint(this.targetWord);
+
+		console.log("Points:", this.points);
 	}
 
 	highlightCurrentRow(row) {

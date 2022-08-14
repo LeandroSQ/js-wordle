@@ -1,4 +1,5 @@
-import { Row } from "./row.js";
+import { Row } from "./row";
+import DOM from "./dom";
 
 export class UI {
 
@@ -21,6 +22,11 @@ export class UI {
 		}
 	}
 
+	regenerateRows(rowCount, wordSize) {
+		this.element.innerHTML = "";
+		this.#generateRows(rowCount, wordSize);
+	}
+
 	setCell({ row, col }, key) {
 		this.rows[row].cells[col].letter = key;
 	}
@@ -39,11 +45,15 @@ export class UI {
 		return this.rows[row].cells.map((x) => x.letter).join("");
 	}
 
-	resetRow(row) {
-		this.rows[row].clear();
+	reset() {
+		this.#clearHints();
 
-		for (let col = 0; col < this.rows[row].cells.length; col++) {
-			this.rows[row].cells[col].clear();
+		for (const row of this.rows) {
+			row.clear();
+
+			for (const cell of row.cells) {
+				cell.clear();
+			}
 		}
 	}
 
@@ -67,10 +77,26 @@ export class UI {
 		}, duration);
 	}
 
-	showMessage(message) {
-		const element = document.createElement("div");
-		element.classList.add("message");
-		element.innerText = message;
+	#clearHints() {
+		const elements = [...document.querySelectorAll(".word-hint")];
+		for (const element of elements) {
+			element.parentElement.removeChild(element);
+		}
+	}
+
+	showHint(message) {
+		const element = DOM.create({
+			tag: "span",
+			parentElement: {
+				tag: "div",
+				classes: ["word-hint"]
+			},
+			innerText: message
+		});
+
+		const parent = this.element.children[this.element.childElementCount - 1];
+		parent.style.position = "relative";
+		parent.appendChild(element);
 	}
 
 	#markLetter(letter, tag) {

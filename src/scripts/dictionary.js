@@ -1,10 +1,20 @@
 export class Dictionary {
 
 	constructor(wordSize) {
-		this.filename = "lang/dictionary-enus.txt";
 		this.wordSize = wordSize;
 		this.words = [];
+		this.cache = { };
 		this.index = 0;
+	}
+
+	async setLanguage({ code, name }) {
+		this.filename = `lang/dictionary-${code.replace("-", "")}.txt`;
+		await this.init();
+	}
+
+	async setWordSize(wordSize) {
+		this.wordSize = wordSize;
+		await this.init();
 	}
 
 	async init() {
@@ -25,10 +35,20 @@ export class Dictionary {
 	}
 
 	async #loadFile() {
+		// Fetch from cache, if available
+		if (this.cache.hasOwnProperty(this.filename)) return this.cache[this.filename];
+
+		// Request the file
 		const response = await fetch(this.filename);
 		const content = await response.text();
 
-		return content.split(/\r?\n/g);
+		// Split it into lines
+		const treatedContent = content.split(/\r?\n/g);
+
+		// Cache it
+		this.cache[this.filename] = treatedContent;
+
+		return treatedContent;
 	}
 
 	#filterSameSizeWords(words) {
