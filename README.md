@@ -33,10 +33,10 @@ Simple Javascript clone of the game [Wordle](https://en.wikipedia.org/wiki/Wordl
 ## Features
 
 - Light and Dark mode
-- Full compatible with mobile
-- Responsive design
+- Mobile support
+- Multiple languages (English and Portuguese)
+- Multiple difficulties (Easy, Medium and Hard)
 - Vanilla JS without external dependencies
-- Fully dynamic, adjusting parameters like word size is possible
 - Dictionaries are processed and analyzed, you won't see archaic or strange words
 
 ## Project
